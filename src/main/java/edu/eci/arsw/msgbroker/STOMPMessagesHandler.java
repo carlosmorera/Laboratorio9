@@ -25,17 +25,19 @@ public class STOMPMessagesHandler {
 	@Autowired
 	SimpMessagingTemplate msgt;
         private int numeroPuntos = 0;
-        List<Point> puntosPoligono = new ArrayList<>();
-    
-	@MessageMapping("/newpoint")    
-	public void getLine(Point pt) throws Exception {
-		System.out.println("Nuevo punto recibido en el servidor!:"+pt);
-		msgt.convertAndSend("/topic/newpoint", pt);
-	 if (numeroPuntos == 4) {
+    List<Point> puntosPoligono = new ArrayList<>();
+
+    @MessageMapping("/newpoint")
+    public void getLine(Point pt) throws Exception {
+        System.out.println("Nuevo punto recibido en el servidor!:" + pt);
+        msgt.convertAndSend("/topic/newpoint", pt);
+        puntosPoligono.add(pt);
+        numeroPuntos++;
+        if (numeroPuntos == 4) {
             msgt.convertAndSend("/topic/newpolygon", puntosPoligono);
             System.out.println("==>4 puntos hechos!");
             numeroPuntos = 0;
             puntosPoligono.clear();
         }
-        }
+    }
 }
